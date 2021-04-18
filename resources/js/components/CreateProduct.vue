@@ -153,7 +153,7 @@ export default {
             this.product_variant_prices = [];
             this.product_variant.filter((item) => {
                 tags.push(item.tags);
-            })
+            });
 
             this.getCombn(tags).forEach(item => {
                 this.product_variant_prices.push({
@@ -186,14 +186,14 @@ export default {
                 product_image: this.images,
                 product_variant: this.product_variant,
                 product_variant_prices: this.product_variant_prices
-            }
+            };
 
 
             axios.post('/product', product).then(response => {
                 console.log(response.data);
             }).catch(error => {
                 console.log(error);
-            })
+            });
 
             console.log(product);
         }

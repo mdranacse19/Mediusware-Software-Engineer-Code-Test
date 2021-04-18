@@ -7,6 +7,7 @@ use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
 use App\Models\Variant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,79 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $data['variant'] = Variant::with('product_variants')->get();
+
+        $products = Product::paginate(5);
+        foreach ($products as $key => $product){
+            $variant_prices = DB::table('product_variant_prices as pvp')
+                ->select('price', 'stock', 'product_variant_one')
+                ->where('pvp.product_id', $product->id)
+                ->get();
+            $product->variant_prices = $variant_prices;
+
+            $variants = DB::table('product_variants as pv')->select('*')
+                ->where('pv.product_id', $product->id)
+                ->get();
+            $product->variants = $variants;
+        }
+        $data['products'] = $products;
+        //return $data['products']->toJson();
+
+        return view('products.index', compact('data'));
+    }
+
+
+    public function filter(Request $request){
+        //return $request;
+        $title      = $request->title;
+        $variant_id = $request->variant;
+        $price_from = $request->price_from;
+        $price_to   = $request->price_to;
+        $date       = $request->date;
+
+        $data['variant'] = Variant::with('product_variants')->get();
+
+        $products = Product::when($date, function ($query) use ($date){
+                        $query->whereRaw("substr(created_at, 1, 10) <= '$date'");
+                            //->where('created_at', '<=', $date.' 00:00:00');
+                    })
+                    ->when($title, function ($query) use ($title){
+                        $query->orWhere('title', 'LIKE', "%$title%");
+                    })
+                    ->paginate(10);
+
+        if (!$products->isEmpty()){
+            //return 'success';
+            foreach ($products as $key => $product){
+                $id = $product->id;
+                $variant_prices = DB::table('product_variant_prices as pvp')
+                    ->select('price', 'stock', 'product_variant_one')
+                    ->where('pvp.product_id', $id)
+                    ->when(($price_from and $price_to), function ($query) use ($price_from, $price_to){
+                        $query->whereBetween('pvp.price', [$price_from, $price_to]);
+                    })
+                    ->get();
+                $product->variant_prices = $variant_prices;
+
+                $variants = DB::table('product_variants as pv')->select('*')
+                    ->where('pv.product_id', $id)
+                    ->when($variant_id, function ($query) use ($variant_id){
+                        $query->where('pv.variant', 'LIKE', "%$variant_id%");
+                    })
+                    ->get();
+                $product->variants = $variants;
+            }
+        }
+        $data['products']       = $products;
+        $data['title']          = $title;
+        $data['variant_id']     = $variant_id;
+        $data['price_from']     = $price_from;
+        $data['price_to']       = $price_to;
+        $data['date']           = $date;
+
+        //return $data;
+
+        return view('products.index', compact('data'));
     }
 
     /**
