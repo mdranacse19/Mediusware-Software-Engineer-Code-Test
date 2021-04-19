@@ -188,14 +188,13 @@ export default {
                 product_variant_prices: this.product_variant_prices
             };
 
-
             axios.post('/product', product).then(response => {
                 console.log(response.data);
             }).catch(error => {
                 console.log(error);
             });
 
-            console.log(product);
+            //console.log(product);
         }
 
 

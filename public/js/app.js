@@ -2112,8 +2112,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
-      });
-      console.log(product);
+      }); //console.log(product);
     }
   },
   mounted: function mounted() {
@@ -63284,8 +63283,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\xampp\htdocs\For Interview\interview-question-sr\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! D:\xampp\htdocs\For Interview\interview-question-sr\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\XAMPP\htdocs\Personal\Mediusware-Software-Engineer-Code-Test\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\XAMPP\htdocs\Personal\Mediusware-Software-Engineer-Code-Test\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

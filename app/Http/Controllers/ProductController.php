@@ -112,6 +112,41 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'sku' => 'unique:products',
+        ]);
+
+
+        //return $request;
+        $product = $request->only('title', 'sku', 'description');
+        $store_product = Product::create($product);
+        //product_variant
+        foreach ($request->product_variant as $product_variant){
+            $set_variant = '';
+            foreach ($product_variant['tags'] as $key => $tag){
+                $set_variant .= $tag.'/';
+            }
+            $pv = [
+                'variant' => $set_variant,
+                'variant_id' => $product_variant['option'],
+                'product_id' => $store_product->id,
+            ];
+            //print_r($pv);
+            ProductVariant::create($pv);
+        }
+        //product_variant_prices
+        foreach ($request->product_variant_prices as $variant_price) {
+            //print_r( $variant_price);
+            $pvp = [
+                'price' => $variant_price['price'],
+                'stock' => $variant_price['stock'],
+                'product_id' => $store_product->id,
+            ];
+            ProductVariantPrice::create($pvp);
+        }
+
+        return $request;
+
 
     }
 

@@ -72,9 +72,12 @@
                                     <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
 
                                         <dt class="col-sm-3 pb-0">
+                                            <dl class="row">
                                             @foreach($list->variants as $variant)
-                                                {{ $variant->variant ? $variant->variant : 'N/A' }} /
+                                                <dt class="col-sm-12  pb-2">
+                                                {{ $variant->variant ? $variant->variant : 'N/A' }}</dt>
                                             @endforeach
+                                            </dl>
                                         </dt>
                                         <dd class="col-sm-9">
                                             <dl class="row mb-0">
